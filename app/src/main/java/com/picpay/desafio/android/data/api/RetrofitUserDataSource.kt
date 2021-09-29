@@ -6,5 +6,5 @@ import com.picpay.desafio.android.domain.model.User
 class RetrofitUserDataSource constructor(
     private val picPayService: PicPayService
 ) : UserDataSource {
-    override suspend fun getProducts(): List<User> = picPayService.getUsers()
+    override suspend fun getUsers(): List<User> = picPayService.getUsers()
 }

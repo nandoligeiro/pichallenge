@@ -4,5 +4,5 @@ import com.picpay.desafio.android.domain.model.User
 
 
 interface UserDataSource {
-    suspend fun getProducts(): List<User>
+    suspend fun getUsers(): List<User>
 }
