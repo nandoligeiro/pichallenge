@@ -3,8 +3,8 @@ package com.picpay.desafio.android.presentation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.domain.model.User
-import com.picpay.desafio.android.domain.usecase.GetUsersUseCase
+import com.picpay.desafio.android.data.response.user.UserResponse
+import com.picpay.desafio.android.domain.user.usecase.GetUsersUseCase
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +26,7 @@ class MainViewModelTest {
     private lateinit var useCase: GetUsersUseCase
 
     @Mock
-    private lateinit var user: User
+    private lateinit var user: UserResponse
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
