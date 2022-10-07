@@ -1,8 +1,7 @@
 package com.picpay.desafio.android.data.api
 
-import com.picpay.desafio.android.data.response.user.UserResponse
-
+import com.picpay.desafio.android.domain.user.model.User
 
 interface UserDataSource {
-    suspend fun getUsers(): List<UserResponse>
+    suspend fun getUsers(): List<User>
 }

@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.di
+package com.picpay.desafio.android.di.koin
 
 import com.picpay.desafio.android.data.api.UserDataSource
 import com.picpay.desafio.android.data.repository.user.UserRepositoryImpl

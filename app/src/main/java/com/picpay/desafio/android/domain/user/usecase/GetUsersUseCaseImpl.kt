@@ -9,4 +9,6 @@ class GetUsersUseCaseImpl(private val userRepository: UserRepository) : GetUsers
     } catch (e: Exception) {
         listOf()
     }
+
+    override suspend fun getOrderByUserName() = userRepository.getUsers().sortedBy { it.username }
 }

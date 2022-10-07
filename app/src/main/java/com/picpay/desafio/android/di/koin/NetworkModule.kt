@@ -1,4 +1,4 @@
-package com.picpay.desafio.android.di
+package com.picpay.desafio.android.di.koin
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

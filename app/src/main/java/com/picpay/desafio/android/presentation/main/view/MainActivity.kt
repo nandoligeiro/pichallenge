@@ -4,14 +4,16 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.picpay.desafio.android.R
-import com.picpay.desafio.android.data.response.user.UserResponse
-import com.picpay.desafio.android.databinding.ActivityMainBinding
-import com.picpay.desafio.android.presentation.main.viewmodel.MainViewModel
 import com.picpay.desafio.android.common.RequestState
-import com.picpay.desafio.android.domain.user.model.User
+import com.picpay.desafio.android.databinding.ActivityMainBinding
 import com.picpay.desafio.android.presentation.main.model.UiUser
+import com.picpay.desafio.android.presentation.main.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -43,16 +45,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeVMEvents() {
-        viewModel.userState.observe(this) { state ->
-            when (state) {
-                is RequestState.Loading -> {
-                    showLoading()
-                }
-                is RequestState.Success -> {
-                    notifyAdapter(state.data)
-                }
-                is RequestState.Error -> {
-                    handleError()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userState.collect { uiState ->
+                    when (uiState) {
+                        is RequestState.Loading -> {
+                            showLoading()
+                        }
+                        is RequestState.Success -> {
+                            notifyAdapter(uiState.data)
+                        }
+                        is RequestState.Error -> {
+                            handleError()
+                        }
+                    }
                 }
             }
         }
