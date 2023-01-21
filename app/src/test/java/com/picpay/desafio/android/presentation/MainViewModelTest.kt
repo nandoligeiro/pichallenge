@@ -3,11 +3,14 @@ package com.picpay.desafio.android.presentation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.data.response.user.UserResponse
+import com.picpay.desafio.android.common.RequestState
+import com.picpay.desafio.android.domain.user.model.User
 import com.picpay.desafio.android.domain.user.usecase.GetUsersUseCase
+import com.picpay.desafio.android.presentation.main.viewmodel.MainViewModel
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
@@ -26,7 +29,7 @@ class MainViewModelTest {
     private lateinit var useCase: GetUsersUseCase
 
     @Mock
-    private lateinit var user: UserResponse
+    private lateinit var user: User
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -48,7 +51,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun state_Success_Test() = runBlockingTest {
+    fun state_Success_Test() = runBlocking {
         whenever(useCase()).thenReturn(listOf(user))
         viewModel.getUsers()
         viewModel.userState.value.let {

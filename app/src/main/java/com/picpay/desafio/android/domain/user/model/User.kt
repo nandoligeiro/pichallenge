@@ -8,7 +8,6 @@ data class User(
     val id: Int,
     val username: String
 )
-
 fun User.toUiUser() = UiUser(
     img = this.img,
     name = this.name,
