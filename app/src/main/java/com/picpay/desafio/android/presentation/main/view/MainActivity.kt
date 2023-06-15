@@ -10,10 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.picpay.desafio.android.R
-import com.picpay.desafio.android.common.RequestState
 import com.picpay.desafio.android.databinding.ActivityMainBinding
 import com.picpay.desafio.android.presentation.main.model.UiUser
 import com.picpay.desafio.android.presentation.main.viewmodel.MainViewModel
+import com.picpay.desafio.android.presentation.state.ViewState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -51,13 +51,15 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.userState.collect { uiState ->
                     when (uiState) {
-                        is RequestState.Loading -> {
+                        is ViewState.Loading -> {
                             showLoading()
                         }
-                        is RequestState.Success -> {
+
+                        is ViewState.Success -> {
                             notifyAdapter(uiState.data)
                         }
-                        is RequestState.Error -> {
+
+                        is ViewState.Error -> {
                             handleError()
                         }
                     }
