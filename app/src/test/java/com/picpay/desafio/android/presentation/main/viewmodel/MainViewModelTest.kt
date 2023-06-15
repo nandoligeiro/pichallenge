@@ -1,14 +1,17 @@
-package com.picpay.desafio.android.presentation
+package com.picpay.desafio.android.presentation.main.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.whenever
-import com.picpay.desafio.android.data.response.user.UserResponse
-import com.picpay.desafio.android.domain.user.usecase.GetUsersUseCase
+import com.picpay.desafio.android.presentation.state.Result
+import com.picpay.desafio.android.domain.user.model.User
+import com.picpay.desafio.android.domain.user.usecase.GetUsersOrderedUseCase
+import com.picpay.desafio.android.presentation.state.ViewState
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
@@ -23,17 +26,17 @@ class MainViewModelTest {
     private lateinit var viewModel: MainViewModel
 
     @Mock
-    private lateinit var useCase: GetUsersUseCase
+    private lateinit var useCase: GetUsersOrderedUseCase
 
     @Mock
-    private lateinit var user: UserResponse
+    private lateinit var user: User
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun init() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(StandardTestDispatcher())
 
         MockitoAnnotations.initMocks(this)
         viewModel = spy(MainViewModel(useCase))
@@ -43,25 +46,25 @@ class MainViewModelTest {
     fun state_Loading_Test() = runBlockingTest {
         val currentState = viewModel.userState.value
         assertTrue(
-            currentState is RequestState.Loading
+            currentState is ViewState.Result.Loading
         )
     }
 
     @Test
-    fun state_Success_Test() = runBlockingTest {
-        whenever(useCase()).thenReturn(listOf(user))
+    fun state_Success_Test() = runBlocking {
+        whenever(useCase.getOrderedByUserName()).thenReturn(listOf(user))
         viewModel.getUsers()
         viewModel.userState.value.let {
-            assertTrue(it is RequestState.Success)
+            assertTrue(it is ViewState.Result.Success)
         }
     }
 
     @Test
     fun state_ERROR_Test() = runBlockingTest {
-        whenever(useCase()).thenThrow(RuntimeException())
+        whenever(useCase.getOrderedByUserName()).thenThrow(RuntimeException())
         viewModel.getUsers()
         viewModel.userState.value.let {
-            assertTrue(it is RequestState.Error)
+            assertTrue(it is ViewState.Result.Error)
         }
     }
 }
