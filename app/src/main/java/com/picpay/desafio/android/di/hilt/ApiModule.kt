@@ -16,7 +16,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ApiModule {
     private const val BASE_URL = "https://609a908e0f5a13001721b74e.mockapi.io/picpay/api/"
-    private const val ApiKey = "671f7d44"
+    private const val ApiKey = ""
+    private const val API_KEY = "api-key"
 
     @Singleton
     @Provides
@@ -44,19 +45,20 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit): PicPayService = retrofit.create(PicPayService::class.java)
+    fun provideApiService(retrofit: Retrofit): PicPayService =
+        retrofit.create(PicPayService::class.java)
 
     private fun apiKeyAsQuery(chain: Interceptor.Chain) = chain.proceed(
         chain.request()
             .newBuilder()
-            .url(chain.request().url.newBuilder().addQueryParameter("api-key", ApiKey).build())
+            .url(chain.request().url.newBuilder().addQueryParameter(API_KEY, ApiKey).build())
             .build()
     )
 
     private fun apiKeyAsHeader(it: Interceptor.Chain) = it.proceed(
         it.request()
             .newBuilder()
-            .addHeader("api-key", ApiKey)
+            .addHeader(API_KEY, ApiKey)
             .build()
     )
 
