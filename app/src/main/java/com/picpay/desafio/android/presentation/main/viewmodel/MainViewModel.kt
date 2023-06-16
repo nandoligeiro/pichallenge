@@ -3,6 +3,7 @@ package com.picpay.desafio.android.presentation.main.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picpay.desafio.android.R
+import com.picpay.desafio.android.domain.result.DomainResult
 import com.picpay.desafio.android.domain.user.usecase.GetUsersOrderedUseCase
 import com.picpay.desafio.android.presentation.main.mapper.UserDomainToUiMapper
 import com.picpay.desafio.android.presentation.main.model.UiUser
@@ -24,13 +25,16 @@ class MainViewModel @Inject constructor(
 
     fun getUsers() = viewModelScope.launch {
 
-        try {
-            val users = getUsersUseCase.getOrderedByUserName()
-            _userState.value = ViewState.Success(userDomainToUiMapper.toUiUser(users))
-        } catch (e: Exception) {
-            _userState.value = ViewState.Error(
-                IllegalStateException("${R.string.error_getusers} ${e.message}")
-            )
+        when (val users = getUsersUseCase.getOrderedByUserName()) {
+            is DomainResult.Success -> {
+                _userState.value = ViewState.Success(userDomainToUiMapper.toUiUser(users.data))
+            }
+
+            is DomainResult.Error -> {
+                _userState.value = ViewState.Error(
+                    IllegalStateException("${R.string.error_getusers} ${users.t.message}")
+                )
+            }
         }
     }
 }
