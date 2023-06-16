@@ -1,7 +1,9 @@
 package com.picpay.desafio.android.presentation.main.viewmodel
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.picpay.desafio.android.R
 import com.picpay.desafio.android.domain.user.usecase.GetUsersOrderedUseCase
-import com.picpay.desafio.android.presentation.BaseViewModel
 import com.picpay.desafio.android.presentation.main.mapper.UserDomainToUiMapper
 import com.picpay.desafio.android.presentation.main.model.UiUser
 import com.picpay.desafio.android.presentation.state.ViewState
@@ -15,24 +17,20 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getUsersUseCase: GetUsersOrderedUseCase,
     private val userDomainToUiMapper: UserDomainToUiMapper
-) : BaseViewModel() {
+) : ViewModel() {
 
     private val _userState = MutableStateFlow<ViewState<List<UiUser>>>(ViewState.Loading)
     val userState: StateFlow<ViewState<List<UiUser>>> = _userState
 
-    fun getUsers() = launch {
+    fun getUsers() = viewModelScope.launch {
 
         try {
             val users = getUsersUseCase.getOrderedByUserName()
             _userState.value = ViewState.Success(userDomainToUiMapper.toUiUser(users))
         } catch (e: Exception) {
             _userState.value = ViewState.Error(
-                IllegalStateException(DESCRIPTION_ERROR + { e.message })
+                IllegalStateException("${R.string.error_getusers} ${e.message}")
             )
         }
-    }
-
-    companion object {
-        const val DESCRIPTION_ERROR = "Error getUsers:"
     }
 }
